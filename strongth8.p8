@@ -88,7 +88,7 @@ function gamedraw()
   spr(8,80,40,4,4)
  end
 
- if timer == 0 then
+ if timer <= 0 and timer >= -2 then
   cls(7)
  end
 end

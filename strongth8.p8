@@ -4,6 +4,7 @@ __lua__
 c={0,1,2,8,14,15,7}
 fillp(0xa5a5)
 timer = 0
+fouls = 0
 
 function _init()
  titleinit()
@@ -24,28 +25,46 @@ function titleupdate()
  end
 end
 
+function endupdate()
+ if btnp(5) then
+  scene = 0
+ end
+end
+
 function resettimer()
- timer = rnd(210)
+ timer = rnd(210) + 30
 end
 
 function gameupdate()
  timer -= 1
- -- check for input
- if(btnp(5)) and timer < 0 then
+
+ -- button pressed after flash
+ if btnp(5) and timer <= 0 then
   scene += 1
   resettimer()
+  fouls = 0
+  if scene > 4 then
+   scene = 99
+  end
  end
 
+ -- if button pressed before flash and out of fouls
+ if btnp(5) and timer > 0 then
+  fouls += 1
+  -- todo display foul occured reset stage
+ end
+
+ -- player too slow
  if timer < -15 then
-  -- todo add fail screen
-  scene = 0
+  scene = 100
   resettimer()
+  fouls = 0
  end
 
- if scene > 4 then
-  -- todo victory screen
-  scene = 0
+ if fouls > 2 then
+  scene = 100
   resettimer()
+  fouls = 0
  end
 end
 
@@ -72,10 +91,29 @@ function titledraw()
  print("press x to start game", 20, 70, 12)
 end
 
+function victorydraw()
+ cls(10)
+ print("you win! press x to continue", 5, 60, 0)
+end
+
+function defeatdraw()
+ cls(8)
+ print("you lose! press x to continue", 3, 60, 0)
+end
+
 function gamedraw()
  -- clear screen and draw player
  cls(1)
  spr(16,10,58,2,2)
+
+ -- draw fouls
+ if scene >=1 and scene <= 4 then
+  if fouls == 1 then
+   spr(1, 8, 8)
+  elseif fouls == 2 then
+   spr(1, 18, 8)
+  end
+ end
 
  -- figure out which enemy to draw
  if scene == 1 then
@@ -96,6 +134,8 @@ end
 function _update()
  if scene == 0 then
   titleupdate()
+ elseif scene == 99 or scene == 100 then
+  endupdate()
  else
   gameupdate()
  end
@@ -104,6 +144,10 @@ end
 function _draw()
  if scene == 0 then
   titledraw()
+ elseif scene == 99 then
+  victorydraw()
+ elseif scene == 100 then
+  defeatdraw()
  else
   gamedraw()
  end

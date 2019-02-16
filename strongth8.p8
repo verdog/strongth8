@@ -55,7 +55,7 @@ function gameupdate()
   end
  end
  -- player too slow
- if timer < (-30 * (1/scene) - 1 ) then
+ if timer < (-30 * (1/scene)) then
   scene = 100
   resettimer()
   fouls = 0

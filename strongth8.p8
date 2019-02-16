@@ -38,6 +38,12 @@ end
 function gameupdate()
  timer -= 1
 
+ -- if button pressed before flash and out of fouls
+ if btnp(5) and timer > 0 then
+  fouls += 1
+  -- todo display foul occured reset stage
+ end
+
  -- button pressed after flash
  if btnp(5) and timer <= 0 then
   scene += 1
@@ -47,13 +53,6 @@ function gameupdate()
    scene = 99
   end
  end
-
- -- if button pressed before flash and out of fouls
- if btnp(5) and timer > 0 then
-  fouls += 1
-  -- todo display foul occured reset stage
- end
-
  -- player too slow
  if timer < -15 then
   scene = 100
@@ -111,6 +110,7 @@ function gamedraw()
   if fouls == 1 then
    spr(1, 8, 8)
   elseif fouls == 2 then
+   spr(1, 8, 8)
    spr(1, 18, 8)
   end
  end

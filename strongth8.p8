@@ -5,6 +5,7 @@ c={0,1,2,8,14,15,7}
 fillp(0xa5a5)
 timer = 0
 fouls = 0
+attack = 0
 
 function _init()
  titleinit()
@@ -26,7 +27,7 @@ function titleupdate()
 end
 
 function endupdate()
- if btnp(5) then
+ if btnp(4) then
   scene = 0
  end
 end
@@ -54,7 +55,7 @@ function gameupdate()
   end
  end
  -- player too slow
- if timer < -15 then
+ if timer < (-30 * (1/scene) - 1 ) then
   scene = 100
   resettimer()
   fouls = 0
@@ -92,12 +93,12 @@ end
 
 function victorydraw()
  cls(10)
- print("you win! press x to continue", 5, 60, 0)
+ print("you win! press c to continue", 5, 60, 0)
 end
 
 function defeatdraw()
  cls(8)
- print("you lose! press x to continue", 3, 60, 0)
+ print("you lose! press c to continue", 3, 60, 0)
 end
 
 function gamedraw()

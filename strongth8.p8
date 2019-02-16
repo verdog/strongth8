@@ -1,16 +1,112 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
-function _init()
+c={0,1,2,8,14,15,7}
+fillp(0xa5a5)
+timer = 0
 
+function _init()
+ titleinit()
+ resettimer()
+end
+
+function titleinit()
+ scene = 0
+end
+
+function gameinit()
+ scene = 1
+end
+
+function titleupdate()
+ if(btnp(5)) then
+  gameinit()
+ end
+end
+
+function resettimer()
+ timer = rnd(210)
+end
+
+function gameupdate()
+ timer -= 1
+ -- check for input
+ if(btnp(5)) and timer < 0 then
+  scene += 1
+  resettimer()
+ end
+
+ if timer < -15 then
+  -- todo add fail screen
+  scene = 0
+  resettimer()
+ end
+
+ if scene > 4 then
+  -- todo victory screen
+  scene = 0
+  resettimer()
+ end
+end
+
+function f(i)
+ return c[flr(1.5+abs(6-i%12))]
+end
+
+function tunnel()
+ -- tunnel animation "borrowed" from luca harris
+ -- from this tweet https://twitter.com/lucatron_/status/1096168653735657472
+ for w=3,68,.1 do
+  a=4/w+t()/4
+  k=145/w
+  x=64+cos(a)*k
+  y=64+sin(a)*k
+  i=35/w+2+t()*3
+  rect(x-w,y-w,x+w,y+w,f(i)*16+f(i+.5))
+ end
+end
+
+function titledraw()
+ tunnel()
+ print("press x after the flash", 17, 60, 12)
+ print("press x to start game", 20, 70, 12)
+end
+
+function gamedraw()
+ -- clear screen and draw player
+ cls(1)
+ spr(16,10,58,2,2)
+
+ -- figure out which enemy to draw
+ if scene == 1 then
+  spr(18,100,58,2,2)
+ elseif scene == 2 then
+  spr(20,100,58,2,2)
+ elseif scene == 3 then
+  spr(22,100,58,2,2)
+ elseif scene == 4 then
+  spr(8,80,40,4,4)
+ end
+
+ if timer == 0 then
+  cls(7)
+ end
 end
 
 function _update()
-
+ if scene == 0 then
+  titleupdate()
+ else
+  gameupdate()
+ end
 end
 
 function _draw()
-
+ if scene == 0 then
+  titledraw()
+ else
+  gamedraw()
+ end
 end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000022222222222222222222222222220000000000000000000000000000000000

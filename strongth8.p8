@@ -257,16 +257,14 @@ function gamedraw()
 
 	-- draw particles
 	drawparticles()
+	
+	if offset == 0 and transition == 1then
+  camera(0,0)
+  print("press c to continue",25,35,0)
+ end
 
  if timer <= 0 and timer >= -2 then
   cls(7)
- end
-end
-
-function transitiondraw()
- if offset == 0 then
-  camera(0,0)
-  print("press c to continue",25,40,0)
  end
 end
 
@@ -290,8 +288,6 @@ function _draw()
   victorydraw()
  elseif scene == 100 then
   defeatdraw()
- elseif transition == 1 then
-  transitiondraw()
  else
   gamedraw()
  end

@@ -1,6 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
+-- by strongth and spacedog
+
 c={0,1,2,8,14,15,7}
 fillp(0xa5a5)
 timer = 0

@@ -58,6 +58,7 @@ function titleinit()
 end
 
 function gameinit()
+	particleinit()
  scene = 1
  transition = 0
  offset = 0

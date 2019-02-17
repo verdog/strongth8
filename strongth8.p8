@@ -59,6 +59,10 @@ end
 
 function gameinit()
  scene = 1
+ transition = 0
+ offset = 0
+ resettimer()
+ reaction = 0
 end
 
 function titleupdate()
@@ -136,11 +140,6 @@ function gameupdate()
   scene = 100
   resettimer()
   fouls = 0
- end
-
- -- cheating :)
- if btnp(4) then
- 	scene += 1
  end
  
  if scene == 4 then

@@ -8,6 +8,7 @@ fouls = 0
 attack = 0
 reaction = 0
 offset = 0
+transition = 0
 
 -- particles
 function particleinit()
@@ -77,6 +78,23 @@ function resettimer()
  timer = rnd(210) + 60
 end
 
+function transitionupdate()
+ if btnp(4) then
+  scene += 1
+  resettimer()
+  fouls = 0
+  reaction = 0
+  transition = 0
+  
+  if scene > 4 then
+   scene = 99
+   sfx(-1)
+   music(-1)
+   sfx(2, -1, 1)
+  end
+ end
+end
+
 function gameupdate()
  timer -= 1
  
@@ -98,17 +116,9 @@ function gameupdate()
   sfx(0)
   sfx(1)
   offset=1.5
-  scene += 1
-  resettimer()
-  fouls = 0
-  reaction = 0
-  if scene > 4 then
-   scene = 99
-   sfx(-1)
-   music(-1)
-   sfx(2, -1, 1)
-  end
+  transition = 1
  end
+ 
  -- player too slow
  if timer < (-30 * (1/scene)) then
   scene = 100
@@ -224,9 +234,6 @@ function gamedraw()
   print(reaction, 62, 5, 0) 
  end
   
- if btnp(5) and timer <= 0 then
-  screen_shake()
- end
  -- draw fouls
  if scene >=1 and scene <= 4 then
   if fouls == 1 then
@@ -256,11 +263,20 @@ function gamedraw()
  end
 end
 
+function transitiondraw()
+ if offset == 0 then
+  camera(0,0)
+  print("press c to continue",25,40,0)
+ end
+end
+
 function _update()
  if scene == 0 then
   titleupdate()
  elseif scene == 99 or scene == 100 then
   endupdate()
+ elseif transition == 1 then
+  transitionupdate()
  else
   gameupdate()
  end
@@ -274,6 +290,8 @@ function _draw()
   victorydraw()
  elseif scene == 100 then
   defeatdraw()
+ elseif transition == 1 then
+  transitiondraw()
  else
   gamedraw()
  end

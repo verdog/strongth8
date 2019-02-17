@@ -120,6 +120,9 @@ function gameupdate()
  end
 
  if fouls > 2 then
+  sfx(-1)
+  music(01)
+  sfx(3,-1, 1)
   scene = 100
   resettimer()
   fouls = 0

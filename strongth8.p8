@@ -7,8 +7,44 @@ timer = 0
 fouls = 0
 attack = 0
 
+-- particles
+function particleinit()
+	-- called once to initialize the particle system
+	particles = {}
+end
+
+function updateparticles()
+ -- called once per frame
+ for p in all(particles) do
+ 	if (p.life <= 0) then
+ 		-- dead
+ 		del(particles,p)
+ 	end
+ 	p.x += p.xvel
+ 	p.y += p.yvel
+ 	p.life -= 1
+ end
+end
+
+function drawparticles()
+	-- called once per frame
+	for p in all(particles) do
+		spr(p.sprite, p.x, p.y)
+	end
+end
+
+function spawnparticle(p)
+	--[[ particle format:
+	{
+		x, y, xvel, yvel, life, sprite
+	}
+	]]
+	add(particles, p)
+end
+
 function _init()
  titleinit()
+ particleinit()
  resettimer()
 end
 
@@ -75,6 +111,25 @@ function gameupdate()
  if btnp(4) then
  	scene += 1
  end
+ 
+ if scene == 4 then
+ 	-- skull
+ 	-- left eye
+		spawnparticle({ 
+			x=84+rnd(2)+4*sin(timer/24),
+			y=48, xvel=0, yvel=-1, 
+			life=16+rnd(10), sprite=49+rnd(4)
+		})
+		-- right eye
+		spawnparticle({ 
+			x=100+rnd(2)+4*sin(timer/24),
+			y=48, xvel=0, yvel=-1, 
+			life=16+rnd(10), sprite=49+rnd(4)
+		}) 
+ end
+ 
+ -- particles
+ updateparticles()
 end
 
 function f(i)
@@ -135,10 +190,10 @@ function gamedraw()
   spr(22,100,58+2*sin(timer/30),2,2)
  elseif scene == 4 then
   spr(8,80+4*sin(timer/24)+timer%2,40,4,4)
-  -- fire eyes
-  spr(49+rnd(4),84+rnd(2)+4*sin(timer/24),48)
-  spr(49+rnd(4),100+rnd(2)+4*sin(timer/24),48)
- end
+  end
+
+	-- draw particles
+	drawparticles()
 
  if timer <= 0 and timer >= -2 then
   cls(7)

@@ -6,6 +6,8 @@ fillp(0xa5a5)
 timer = 0
 fouls = 0
 attack = 0
+reaction = 0
+offset = 0
 
 -- particles
 function particleinit()
@@ -50,6 +52,8 @@ end
 
 function titleinit()
  scene = 0
+ sfx(-1)
+ music(-1)
 end
 
 function gameinit()
@@ -65,16 +69,24 @@ end
 
 function endupdate()
  if btnp(4) then
-  scene = 0
+  titleinit()
  end
 end
 
 function resettimer()
- timer = rnd(210) + 30
+ timer = rnd(210) + 60
 end
 
 function gameupdate()
  timer -= 1
+ 
+ if timer <= 0 and timer >= -1 then
+  sfx(6)
+ end
+ if timer < 0 then
+  reaction += 1
+ end
+ 
  -- if button pressed before flash and out of fouls
  if btnp(5) and timer > 0 then
   fouls += 1
@@ -85,17 +97,23 @@ function gameupdate()
  if btnp(5) and timer <= 0 then
   sfx(0)
   sfx(1)
+  offset=1.5
   scene += 1
   resettimer()
   fouls = 0
+  reaction = 0
   if scene > 4 then
    scene = 99
+   sfx(-1)
+   music(-1)
    sfx(2, -1, 1)
   end
  end
  -- player too slow
  if timer < (-30 * (1/scene)) then
   scene = 100
+  sfx(-1)
+  music(-1)
   sfx(3, -1, 1)
   resettimer()
   fouls = 0
@@ -165,12 +183,36 @@ function defeatdraw()
  print("you lose! press c to continue", 3, 60, 0)
 end
 
+function screen_shake()
+ local fade = 0.70
+ local offset_x=16-rnd(32)
+ local offset_y=16-rnd(32)
+ 
+ offset_x*=offset
+ offset_y*=offset
+ 
+ camera(offset_x,offset_y)
+
+ offset*=fade
+ if offset < 0.05 then
+  offset=0
+ end
+end
+
 function gamedraw()
  -- clear screen and draw player
  cls(1)
  map(0,0)
  spr(16,10,58,2,2)
 
+ -- draw reaction counter
+ if timer < 0 then
+  print(reaction, 62, 5, 0) 
+ end
+  
+ if btnp(5) and timer <= 0 then
+  screen_shake()
+ end
  -- draw fouls
  if scene >=1 and scene <= 4 then
   if fouls == 1 then
@@ -211,6 +253,7 @@ function _update()
 end
 
 function _draw()
+ screen_shake()
  if scene == 0 then
   titledraw()
  elseif scene == 99 then
@@ -278,6 +321,7 @@ __sfx__
 00200000157501575018750147501375011750127501075010750127500f75002750027500270002700017000170001700257002a7002e7003070031700327003370033700337003270032700317002f70000700
 012000000961407611066110661107611096110a6110b6110a6110961108611096110a6110c6110c6110c6110b6110961108611096110b6110d6110d6110c6110a6110a6110a6110b6110e6110f6110d61109611
 012000000a61407611096110b6110a611086110a6110d6110d6110c6110d61111611156111a611246112a6112f611306112f6112e6112b61127611216111c61118611136110e6110b6110a6110c6110b6110a611
+0001000028750347002a0002b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __music__
 00 40414344
 01 04424344
